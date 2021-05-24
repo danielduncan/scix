@@ -1,7 +1,6 @@
 # Adaption of a notebook which is an amalgamation of the hybrid qantum-classical neural network code from the Qiskit textbook, Georgina Carson and Samuel Wait's miscellaneous code, with some modification by me (Daniel Duncan) for the sake of data collection automation and ease of variable manipulation.
 
 # imports
-
 import csv
 import time
 from qiskit.providers.ibmq import least_busy
@@ -20,12 +19,9 @@ from qiskit.tools.jupyter import *
 from qiskit.compiler import transpile, assemble
 from qiskit import QuantumCircuit, execute, Aer, IBMQ
 
-# importing standard Qiskit libraries
-
 # loading IBM Q account(s)
-provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
-
-# other important imports
+provider = IBMQ.load_account()
+backend = provider.backend.ibmq_qasm_simulator
 
 
 class QuantumCircuit:
@@ -70,22 +66,19 @@ class QuantumCircuit:
 
 # simulator = qiskit.Aer.get_backend('qasm_simulator')
 
-# system = least_busy(provider.backends(filters=lambda x: x.configuration().n_qubits >= 2 # qubit filter
+# backend = least_busy(provider.backends(filters=lambda x: x.configuration().n_qubits >= 2 # qubit filter
         # and not x.configuration().simulator # anything but the simulator!
         # and x.status().operational==True))
 
-system = provider.get_backend('ibmq_belem')
-
-system.name()  # display the name of the device
+backend.name()  # display the name of the device
 for i in range(1):
     for qubits_in_use in range(2):
         qubitsUsed = []
         qubitsUsed.append(qubits_in_use)
         qubits_in_use = qubits_in_use + 1
         print("Qubits currently in use: ", qubits_in_use)
-        circuit = QuantumCircuit(qubits_in_use, system, 8192)
-        print('Expected value for rotation pi {}'.format(
-            circuit.run([np.pi])[0]))
+        circuit = QuantumCircuit(qubits_in_use, backend, 8192)
+        # print('Expected value for rotation pi {}'.format(circuit.run([np.pi])[0]))
         circuit._circuit.draw()
 
         class HybridFunction(Function):
@@ -155,7 +148,7 @@ for i in range(1):
         data_iter = iter(train_loader)
         fig, axes = plt.subplots(
             nrows=1, ncols=n_samples_show, figsize=(10, 3))
-
+    
         while n_samples_show > 0:
             images, targets = data_iter.__next__()
 
@@ -189,8 +182,7 @@ for i in range(1):
                 self.dropout = nn.Dropout2d()
                 self.fc1 = nn.Linear(256, 64)
                 self.fc2 = nn.Linear(64, 1)
-                self.hybrid = Hybrid(
-                    qiskit.Aer.get_backend(system), 100, np.pi / 2)
+                self.hybrid = Hybrid((backend), 100, np.pi / 2)
 
             def forward(self, x):
                 x = F.relu(self.conv1(x))
@@ -203,11 +195,12 @@ for i in range(1):
                 x = self.fc2(x)
                 x = self.hybrid(x)
                 return torch.cat((x, 1 - x), -1)
+
         model = Net()
         optimizer = optim.Adam(model.parameters(), lr=0.001)
         loss_func = nn.NLLLoss()
 
-        epochs = 100
+        epochs = 5
         loss_list = []
 
         model.train()
@@ -226,8 +219,7 @@ for i in range(1):
 
                 total_loss.append(loss.item())
             loss_list.append(sum(total_loss)/len(total_loss))
-            print('Training [{:.0f}%]\tLoss: {:.4f}'.format(
-                100. * (epoch + 1) / epochs, loss_list[-1]))
+            print('Training [{:.0f}%]\tLoss: {:.4f}'.format(100. * (epoch + 1) / epochs, loss_list[-1]))
         plt.plot(loss_list)
         plt.title('Hybrid NN Training Convergence')
         plt.xlabel('Training Iterations')
