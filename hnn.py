@@ -15,6 +15,7 @@ from qiskit.visualization import *
 from torchvision import datasets, transforms
 from torch.autograd import Function
 
+from IPython.display import FileLink
 
 trials = 2
 qubitsToUse = 2
