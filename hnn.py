@@ -18,7 +18,7 @@ from torch.autograd import Function
 
 from IPython.display import FileLink
 
-trials = 2
+trials = 1
 qubitsToUse = 1
 
 # load IBM Q account
@@ -165,11 +165,13 @@ class Net(nn.Module):
 # outputs the name of the device
 print("Backend in use: ", backend.name())
 
+accuracyPlural = []
+qubitsUsed = []
+
 for i in range(trials):
     for qubitsInUse in range(qubitsToUse):
-        qubitsUsed = []
-        qubitsUsed.append(qubitsInUse)
         qubitsInUse = qubitsInUse + 1
+        qubitsUsed.append(qubitsInUse)
         print("Qubits currently in use: ", qubitsInUse)
         circuit = QuantumCircuit(qubitsInUse, backend, 8192)
         circuit._circuit.draw()
@@ -214,7 +216,6 @@ for i in range(trials):
                 loss = loss_func(output, target)
                 total_loss.append(loss.item())
                 accuracy = correct / len(test_loader) * 100
-                accuracyPlural = []
                 accuracyPlural.append(accuracy)
             print('Performance on test data:\n\tLoss: {:.4f}\n\tAccuracy: {:.1f}%'.format(sum(total_loss) / len(total_loss), accuracy))
         n_samples_show = 5
@@ -237,9 +238,10 @@ for i in range(trials):
                 axes[count].set_title('Predicted {}'.format(pred.item()))
 
                 count += 1
-i = i + 1
 
-qubitsVsAccuracy = {qubitsUsed[i]: accuracyPlural[i] for i in range(len(qubitsUsed))}
+qubitsExport = {i: qubitsUsed[i] for i in range(len(qubitsUsed))}
+accuracyExport = {i: accuracyPlural[i] for i in range(len(accuracyPlural))}
+i = i + 1
 
 # function to export your data as a CSV (you can then use in Excel or any programming language you like)
 def export_dict(filename, dict):
@@ -250,6 +252,6 @@ def export_dict(filename, dict):
     local_file = FileLink(filename, result_html_prefix="Click here to download: ")
     display(local_file)
 
-filename = 'results.csv'
-export_dict(filename, qubitsVsAccuracy)
+export_dict('qubits.csv', qubitsExport)
+export_dict('accuracies.csv', accuracyExport)
 print("Experiment complete!")
