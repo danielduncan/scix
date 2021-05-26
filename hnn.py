@@ -8,6 +8,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 import numpy as np
+import csv
 
 from qiskit import IBMQ
 from qiskit import transpile, assemble
@@ -18,7 +19,7 @@ from torch.autograd import Function
 from IPython.display import FileLink
 
 trials = 2
-qubitsToUse = 2
+qubitsToUse = 1
 
 # load IBM Q account
 # IBMQ.save_account('')
@@ -251,3 +252,4 @@ def export_dict(filename, dict):
 
 filename = 'results.csv'
 export_dict(filename, qubitsVsAccuracy)
+print("Experiment complete!")
