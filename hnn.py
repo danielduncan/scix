@@ -1,5 +1,4 @@
 # Adaption of a notebook which is an amalgamation of the hybrid qantum-classical neural network code from the Qiskit textbook, Georgina Carson and Samuel Wait's miscellaneous code, with some modification by me (Daniel Duncan) for the sake of data collection automation and ease of variable manipulation.
-
 import qiskit
 import torch
 import torch.nn as nn
@@ -19,12 +18,12 @@ from torch.autograd import Function
 from IPython.display import FileLink
 
 trials = 1
-qubitsToUse = 1
+qubitsToUse = 2
 
 # load IBM Q account
 # IBMQ.save_account('')
 provider = IBMQ.load_account()
-backend = provider.backend.ibmq_qasm_simulator
+backend = provider.backend.ibmq_manila
 
 # quantum circuit
 class QuantumCircuit:
@@ -103,8 +102,8 @@ class Hybrid(nn.Module):
     def forward(self, input):
         return HybridFunction.apply(input, self.quantum_circuit, self.shift)
 
-# first 5 samples
-n_samples = 5
+# first 100 samples
+n_samples = 100
 X_train = datasets.MNIST(root='./data', train=True, download=True, transform=transforms.Compose([transforms.ToTensor()]))
 
 idx = np.append(np.where(X_train.targets == 0) [0][:n_samples], np.where(X_train.targets == 1)[0][:n_samples])
@@ -128,7 +127,7 @@ while n_samples_show > 0:
 
     n_samples_show -= 1
 
-n_samples = 5
+n_samples = 100
 
 X_test = datasets.MNIST(root='./data', train=False, download=True, transform=transforms.Compose([transforms.ToTensor()]))
 
@@ -216,8 +215,8 @@ for i in range(trials):
                 loss = loss_func(output, target)
                 total_loss.append(loss.item())
                 accuracy = correct / len(test_loader) * 100
-                accuracyPlural.append(accuracy)
             print('Performance on test data:\n\tLoss: {:.4f}\n\tAccuracy: {:.1f}%'.format(sum(total_loss) / len(total_loss), accuracy))
+        accuracyPlural.append(accuracy)
         n_samples_show = 5
         count = 0
         fig, axes = plt.subplots(nrows=1, ncols=n_samples_show, figsize=(10, 3))
@@ -239,7 +238,7 @@ for i in range(trials):
 
                 count += 1
 
-qubitsExport = {i: qubitsUsed[i] for i in range(len(qubitsUsed))}
+qubitsExport = {i: qubitsUsed[i] for i in range(len(accuracyPlural))}
 accuracyExport = {i: accuracyPlural[i] for i in range(len(accuracyPlural))}
 i = i + 1
 
