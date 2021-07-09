@@ -1,0 +1,137 @@
+\documentclass{article}
+
+
+\usepackage{arxiv}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{graphicx}
+\usepackage[square,numbers]{natbib}
+\bibliographystyle{abbrvnat}
+\usepackage{doi}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage[nottoc]{tocbibind}
+\usepackage{minted}
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+
+\title{Artificial Classical-Quantum Neural Networks and Varying Numbers of Qubits}
+
+\date{June, 2021}
+
+\author{ {\hspace{1mm}Daniel J. Duncan} \\
+	Science Extension \\
+	Northern Beaches Secondary College Manly Campus \\
+	Sydney, NSW 2099 \\
+	\texttt{daniel.duncan4@education.nsw.gov.au} \\
+}
+
+\renewcommand{\undertitle}{Draft}
+
+%%% Add PDF metadata to help others organize their library
+%%% Once the PDF is generated, you can check the metadata with
+%%% $ pdfinfo template.pdf
+\hypersetup{
+pdftitle={Artificial Classical-Quantum Neural Networks and Varying Numbers of Qubits},
+% not sure about subject tag
+pdfsubject={cs.ET},
+pdfauthor={Daniel J. Duncan},
+pdfkeywords={First keyword, Second keyword, More},
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\tableofcontents
+
+\newpage
+\section{Introduction}
+As quantum computing becomes increasingly viable, its applications must be examined. A technology which may benefit from quantum computer acceleration is neural networks. In a review of progress made in the field of machine learning (ML) and quantum physics, and quantum machine learning (QML), applying ML to quantum physics, mainly involving quantum mechanical calculations which are traditionally difficult to complete, and quantum enhancements for ML and the potential speedup of various tasks are explored \cite{Dunjko2018}. Despite the capabilities of quantum computers being rapidly expanded by innovations in both quantum hardware, and algorithms for the software executed on them, they remain simplistic. Quantum computers are currently noisy intermediate scale quantum (NISQ) technologies. Intermediate scale [describes] devices that are large enough ... that we can't by brute force simulate the quantum system using our most powerful existing digital computers … noisy reminds us that the ... quantum gates in the device will sometimes make errors ... so noise is going to limit their computational power (Preskill 2019). Noise and scale related limitations of computational power mean that purely quantum neural networks are difficult to implement and test, but hybrid classical-quantum neural networks are viable.
+
+\subsection{Quantum Computing}
+In Simulating Physics with Computers (Feynman 1982), Richard Feynman proposed that in order to simulate the exact physics of nature, quantum physics must be perfectly modelled using a computer which is fundamentally quantum. Like classical computers, quantum computers receive an input, do processing, and then return an output. Unlike classical computers which use bits, quantum computers make use of qubits (quantum bits). Qubits are fundamentally quantum objects (atoms, ions and photons). A quantum computer leverages three key principles of quantum physics, or properties of quantum objects (atoms, ions and photons):
+\begin{enumerate}
+\item Superposition: the state in which a quantum object exists in all possible states simultaneously;
+\item Interference: the possibility that the wave function of a particle will either destructively or constructively interfere with another particle’s wave function;
+\item Entanglement: the connection between particles, resulting in an inability to determine the quantum state of an individual particle, without the other particle it is entangled to.
+(Swan et al 2020).
+\end{enumerate}
+
+\subsection{Artificial Neural Networks}
+Artificial neural networks (ANN) are the basis of machine learning (ML) and artificial intelligence (AI) algorithms.
+
+\subsection{Hybrid Quantum-Classical Neural Networks}
+Hybrid quantum-classical neural networks can be implemented using parameterised quantum circuits (PQC). COMPONENTS. APPLICATIONS. Due to the widespread nature of classification ANN, hybrid quantum-classical neural networks may prove most useful. Previous similar research, notably involving the implementation of classification QML models on quantum computers include \cite{Schuld2017}, \cite{Grant2018}, \cite{Havlicek2019a} and \cite{Tacchino2019}. Using quantum algorithms for machine learning, QML has been shown to theoretically be exponentially faster than classical algorithms \cite{Lloyd2013}.
+
+\newpage
+\section{Research Question}
+How does the classification accuracy of a hybrid quantum-classical neural network change with respect to the number of qubits in its hidden parameterized quantum circuit layer? Ultimately, what is the number of qubits in the hidden parameterized quantum circuit layer of a hybrid quantum-classical neural network which results in the greatest classification accuracy?
+
+\section{Hypothesis}
+As the number of qubits utilised by the quantum computer increases, the accuracy of the neural network will decrease due to noise in the hardware. Limitations on computation power due to noise is supported by (Preskill 2019), OTHERS.
+
+\section{Methodology}
+Code for the hybrid classical-quantum neural network was obtained from the Qiskit textbook, and modified for variable control and data collection. The code used for collecting data is available in appendix I. The majority of prior research involving classification QML models has been conducted on IBM quantum computers with quantum processor based artificial neurons, and accuracy has been measured in simple pattern recognition tasks (Benedetti et al 2019). Thus, the quantum circuit was run on ibmq\_manila, an IBM quantum machine with a 5 qubit 
+Falcon r5.11L processor and a quantum volume of 32. Accuracy was measured using percent correct classification (PCC), a method which treated every error with the same weight (Twomey et al 1995), resulting in a focus on the hybrid quantum-classical neural network’s effectiveness. Variables are outlined below in table \ref{variables}.
+
+\begin{center}
+\captionof{table}{Variables}\label{variables}
+\begin{tabular}{ |c|c|c|c| }
+\hline
+Independent & Dependent & Controlled \\
+\hline
+{Number of qubits} & {Percent accuracy of neural network} & {Quantum computer (ibmq\_manila)} \\ 
+&  & {Code utilised (hnn.py)} \\ 
+&  & {Training and datasets} \\ 
+\hline
+\end{tabular}
+\end{center}
+
+\section{Results}
+\begin{center}
+\captionof{table}{Average accuracy and loss for each number of qubits}\label{avgresults}
+\begin{tabular}{ |c|c|c| }
+\hline
+Qubits & Accuracy & Loss\\
+\hline
+{1} & {46.50\%} & {-0.50265}\\ 
+\hline
+{2} & {50.00\%} & {-0.51135}\\
+\hline
+{3} & {50.00\%} & {-0.761}\\ 
+\hline
+{4} & {50.00\%} & {3.04}\\ 
+\hline
+{5} & {50.00\%} & {-49.2362}\\ 
+\hline
+\end{tabular}
+\end{center}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+\newpage
+
+\bibliography{references}
+
+\newpage
+
+\appendix
+\section{Code}
+\inputminted{octave}{hnn.py}
+
+\end{document}
