@@ -19,7 +19,7 @@ from torch.autograd import Function
 from IPython.display import FileLink
 
 trials = 1
-qubitsToUse = 5
+qubitsToUse = 1
 
 # load IBM Q account
 # IBMQ.save_account('')
@@ -55,9 +55,9 @@ class QuantumCircuit:
         counts = np.array(list(result.values()))
         states = np.array(list(result.keys())).astype(float)
         
-        # Compute probabilities for each state
+        # compute probabilities for each state
         probabilities = counts / self.shots
-        # Get state expectation
+        # get state expectation
         expectation = np.sum(states * probabilities)
         
         return np.array([expectation])
@@ -216,6 +216,8 @@ for i in range(trials):
                 loss = loss_func(output, target)
                 total_loss.append(loss.item())
                 accuracy = correct / len(test_loader) * 100
+            print(correct, ' correct')
+            print(len(test_loader))
             print('Performance on test data:\n\tLoss: {:.4f}\n\tAccuracy: {:.1f}%'.format(sum(total_loss) / len(total_loss), accuracy))
         accuracyPlural.append(accuracy)
         n_samples_show = 5

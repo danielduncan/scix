@@ -1,25 +1,20 @@
-# Adaption of a notebook which is an amalgamation of the hybrid qantum-classical neural network code from the Qiskit textbook, Georgina Carson and Samuel Wait's miscellaneous code, with some modification by me (Daniel Duncan) for the sake of data collection automation and ease of variable manipulation.
+import numpy as np
 
-import qiskit
 import torch
 import torch.nn as nn
-import matplotlib.pyplot as plt
 import torch.optim as optim
 import torch.nn.functional as F
-
-import numpy as np
-import csv
-
-from qiskit import IBMQ
-from qiskit import transpile, assemble
-from qiskit.visualization import *
 from torchvision import datasets, transforms
 from torch.autograd import Function
 
-from IPython.display import FileLink
+import qiskit
+from qiskit import IBMQ
+from qiskit import transpile, assemble
+from qiskit.visualization import *
 
-trials = 1
-qubitsToUse = 5
+
+trials = 
+qubitsToUse = # range of 0 (1 qubits) to 4 (1, 2, 3, 4 and 5 qubits)
 
 # load IBM Q account
 # IBMQ.save_account('')
@@ -55,9 +50,9 @@ class QuantumCircuit:
         counts = np.array(list(result.values()))
         states = np.array(list(result.keys())).astype(float)
         
-        # Compute probabilities for each state
+        # compute probabilities for each state
         probabilities = counts / self.shots
-        # Get state expectation
+        # get state expectation
         expectation = np.sum(states * probabilities)
         
         return np.array([expectation])
@@ -161,20 +156,10 @@ class Net(nn.Module):
         x = self.hybrid(x)
         return torch.cat((x, 1 - x), -1)
 
-
-# outputs the name of the device
-print("Backend in use: ", backend.name())
-
-accuracyPlural = []
-qubitsUsed = []
-
 for i in range(trials):
     for qubitsInUse in range(qubitsToUse):
         qubitsInUse = qubitsInUse + 1
-        qubitsUsed.append(qubitsInUse)
-        print("Qubits currently in use: ", qubitsInUse)
         circuit = QuantumCircuit(qubitsInUse, backend, 8192)
-        circuit._circuit.draw()
 
         optimizer = optim.Adam(Net().parameters(), lr=0.001)
         loss_func = nn.NLLLoss()
@@ -217,7 +202,6 @@ for i in range(trials):
                 total_loss.append(loss.item())
                 accuracy = correct / len(test_loader) * 100
             print('Performance on test data:\n\tLoss: {:.4f}\n\tAccuracy: {:.1f}%'.format(sum(total_loss) / len(total_loss), accuracy))
-        accuracyPlural.append(accuracy)
         n_samples_show = 5
         count = 0
         fig, axes = plt.subplots(nrows=1, ncols=n_samples_show, figsize=(10, 3))
@@ -239,19 +223,4 @@ for i in range(trials):
 
                 count += 1
 
-qubitsExport = {i: qubitsUsed[i] for i in range(len(qubitsUsed))}
-accuracyExport = {i: accuracyPlural[i] for i in range(len(accuracyPlural))}
 i = i + 1
-
-# function to export your data as a CSV (you can then use in Excel or any programming language you like)
-def export_dict(filename, dict):
-    with open(filename, 'w') as f:
-        w = csv.DictWriter(f, dict.keys())
-        w.writeheader()
-        w.writerow(dict)
-    local_file = FileLink(filename, result_html_prefix="Click here to download: ")
-    display(local_file)
-
-export_dict('qubits.csv', qubitsExport)
-export_dict('accuracies.csv', accuracyExport)
-print("Experiment complete!")
